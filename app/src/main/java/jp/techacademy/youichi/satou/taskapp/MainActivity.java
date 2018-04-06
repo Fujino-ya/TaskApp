@@ -3,21 +3,26 @@ package jp.techacademy.youichi.satou.taskapp;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.support.v7.widget.SearchView;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.AlarmManager;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import io.realm.Realm;
+
+import io.realm.Realm;//
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.Sort;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ListView mListView;
     private TaskAdapter mTaskAdapter;
+    private SearchView mSearchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +51,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, InputActivity.class);
                 startActivity(intent);
+                mSearchView.onActionViewCollapsed();
             }
         });
+
 
         // Realmの設定
         mRealm = Realm.getDefaultInstance();
@@ -80,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
                 // ダイアログを表示する
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                mSearchView.onActionViewCollapsed();
 
                 builder.setTitle("削除");
                 builder.setMessage(task.getTitle() + "を削除しますか");
@@ -136,6 +146,49 @@ public class MainActivity extends AppCompatActivity {
 
         mRealm.close();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {//
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.search_menu_search_view);
+
+        mSearchView = (SearchView) menuItem.getActionView();
+
+        mSearchView.setIconifiedByDefault(true);
+
+        mSearchView.setQueryHint("カテゴリー検索");
+
+        mSearchView.setOnQueryTextListener(this.onQueryTextListener);
+
+        return true;
+    }
+
+    private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String searchWord) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if (newText == null || newText.equals("")) {
+                reloadListView();
+            } else {
+
+                RealmResults<Task> searchRealmResults = mRealm.where(Task.class).equalTo("category", newText).findAll();
+                searchRealmResults = searchRealmResults.sort("date", Sort.DESCENDING);
+
+                mTaskAdapter.setTaskList(mRealm.copyFromRealm(searchRealmResults));
+
+                mListView.setAdapter(mTaskAdapter);
+
+                mTaskAdapter.notifyDataSetChanged();
+            }
+            return true;
+        }
+    };
 
 }
 

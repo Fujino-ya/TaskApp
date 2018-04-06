@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="jp.techacademy.youichi.satou.taskapp.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/search_menu_search_view"
+        android:title="カテゴリー検索"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
 </menu>

@@ -47,17 +47,20 @@ public class TaskAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(android.R.layout.simple_list_item_2, null);
+            convertView = mLayoutInflater.inflate(R.layout.list_item,null);
         }
 
-        TextView textView1 = (TextView) convertView.findViewById(android.R.id.text1);
-        TextView textView2 = (TextView) convertView.findViewById(android.R.id.text2);
+        TextView textView1 = (TextView) convertView.findViewById(R.id.edit_title);
+        TextView textView2 = (TextView) convertView.findViewById(R.id.edit_content);
+        TextView textView3 = (TextView) convertView.findViewById(R.id.edit_category);
 
         textView1.setText(mTaskList.get(position).getTitle());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.JAPANESE);
         Date date = mTaskList.get(position).getDate();
         textView2.setText(simpleDateFormat.format(date));
+
+        textView3.setText(mTaskList.get(position).getCategory());
 
         return convertView;
     }

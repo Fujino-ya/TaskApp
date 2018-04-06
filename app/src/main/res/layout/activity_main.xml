@@ -11,7 +11,8 @@
     <ListView
         android:id="@+id/listView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/Search" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -21,5 +22,6 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/plus"
         app:backgroundTint="@color/colorPrimary" />
+
 
 </android.support.design.widget.CoordinatorLayout>
